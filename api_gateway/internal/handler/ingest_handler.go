@@ -9,15 +9,18 @@ import (
 	"github.com/ShivangSrivastava/sentinel/api_gateway/internal/utils"
 )
 
-type IngestHandler struct {
-	service service.IngestorClient
+type IngestHandler interface {
+	HandleIngest(w http.ResponseWriter, r *http.Request)
+}
+type ingestHandler struct {
+	service service.IngestorService
 }
 
-func NewIngestHandler(s service.IngestorClient) *IngestHandler {
-	return &IngestHandler{s}
+func NewIngestHandler(s service.IngestorService) IngestHandler {
+	return &ingestHandler{s}
 }
 
-func (h *IngestHandler) HandleIngest(w http.ResponseWriter, r *http.Request) {
+func (h *ingestHandler) HandleIngest(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil || !utils.IsValidJSON(body) {
 		utils.ErrorJSON(w, http.StatusBadRequest, "Invalid JSON")

@@ -11,25 +11,29 @@ import (
 	pb "github.com/ShivangSrivastava/sentinel/proto/logging"
 )
 
-type IngestorClient struct {
+type IngestorService interface {
+	SendLogParser(rawJSON string) (*pb.LogResponse, error)
+	Close() error
+}
+type ingestorService struct {
 	client pb.LogIngestorClient
 	conn   *grpc.ClientConn
 }
 
-func NewIngestorService(address string) (*IngestorClient, error) {
+func NewIngestorService(address string) (IngestorService, error) {
 	conn, err := utils.ConnectWithRetry(address, 10)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to ingestor at %s: %w", address, err)
 	}
 
 	client := pb.NewLogIngestorClient(conn)
-	return &IngestorClient{
+	return &ingestorService{
 		client: client,
 		conn:   conn,
 	}, nil
 }
 
-func (s *IngestorClient) SendLogParser(rawJSON string) (*pb.LogResponse, error) {
+func (s *ingestorService) SendLogParser(rawJSON string) (*pb.LogResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -45,9 +49,9 @@ func (s *IngestorClient) SendLogParser(rawJSON string) (*pb.LogResponse, error) 
 	return response, nil
 }
 
-func (c *IngestorClient) Close() error {
-	if c.conn != nil {
-		return c.conn.Close()
+func (s *ingestorService) Close() error {
+	if s.conn != nil {
+		return s.conn.Close()
 	}
 	return nil
 }

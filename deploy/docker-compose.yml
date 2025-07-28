@@ -6,6 +6,45 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+      
+  postgres:
+    image: postgres:17-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  ingestor:
+    build: 
+      context: ..
+      dockerfile: ingestor/Dockerfile
+    command: sh -c "./ingestor"
+    depends_on:
+      - redis
+      - postgres
+    ports:
+      - "50051:50051"
+  migration:
+    build: 
+      context: ..
+      dockerfile: ingestor/Dockerfile
+    command: sh -c "RUN_MIGRATIONS=true ./ingestor && echo 'Migrations complete'"
+    depends_on:
+      - postgres
+    profiles:
+      - migration
 
+  api_gateway:
+    build: 
+      context: ..
+      dockerfile: api_gateway/Dockerfile
+    command: sh -c "./api_gateway"
+    depends_on:
+      - redis
+      - postgres
+      - ingestor
+    ports:
+      - "8080:8080"
 volumes:
   redis_data: 
+  postgres_data:

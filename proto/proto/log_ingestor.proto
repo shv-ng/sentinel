@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package logging;
+
+option go_package = "./logging/;logging";
+
+service LogIngestor {
+  rpc SendLogParser(LogRequest) returns (LogResponse);
+}
+
+message LogRequest {
+  string json_payload = 1;
+}
+
+message LogResponse {
+  bool success = 1; // True if log was accepted
+  string message = 2; // Optional response or error message
+}

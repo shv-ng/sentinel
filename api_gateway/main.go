@@ -15,9 +15,9 @@ func main() {
 		log.Fatalf("Failed to create gRPC client: %v", err)
 	}
 	defer ingestService.Close()
-	ingestHandler := handler.NewIngestHandler(*ingestService)
+	ingestHandler := handler.NewIngestHandler(ingestService)
 
-	r := router.NewRouter(*ingestHandler)
+	r := router.NewRouter(ingestHandler)
 	log.Println("Server is running on :8080")
 	log.Fatalf("Failed to start server: %v\n", http.ListenAndServe(":8080", r))
 }

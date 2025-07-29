@@ -43,7 +43,7 @@ func (s *ingestorService) SendLogParser(rawJSON string) (*pb.LogResponse, error)
 
 	response, err := s.client.SendLogParser(ctx, logReq)
 	if err != nil {
-		return nil, fmt.Errorf("SendLogParser failed: %w", err)
+		return nil, err
 	}
 
 	return response, nil

@@ -33,7 +33,13 @@ func main() {
 	}
 	defer listener.Close()
 	logParserRepo := repo.NewLogParserRepo(pgDB)
+	if logParserRepo == nil {
+		log.Fatal("Failed to initialize logParserRepo")
+	}
 	logParserservice := service.NewLogParserService(logParserRepo)
+	if logParserservice == nil {
+		log.Fatal("Failed to initialize logParserService")
+	}
 	logParserHandler := handler.NewLogIngestorServer(logParserservice)
 
 	grpcServer := grpc.NewServer()

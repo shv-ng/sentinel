@@ -2,7 +2,6 @@ package repo
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/ShivangSrivastava/sentinel/ingestor/internal/models"
 	"github.com/google/uuid"
@@ -30,7 +29,7 @@ RETURNING id;`
 	var id uuid.UUID
 	err := l.db.QueryRow(q, name, is_json, regex_pattern).Scan(&id)
 	if err != nil {
-		return id, fmt.Errorf("failed to create log parser: %w", err)
+		return id, err
 	}
 	return id, nil
 }
@@ -49,7 +48,7 @@ VALUES (
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to create log field: %w", err)
+		return err
 	}
 	return nil
 }

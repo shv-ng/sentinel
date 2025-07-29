@@ -32,7 +32,16 @@ func (l *logParserService) CreateLogParser(jsonData string) error {
 	if err != nil {
 		return err
 	}
-	id, err := l.repo.CreateLogParser(p.Name, p.IsJson, *p.RegexPattern)
+	var regexPattern string
+	if p.RegexPattern != nil {
+		regexPattern = *p.RegexPattern
+	} else {
+		regexPattern = ""
+	}
+	if p.Name == "" {
+		return nil
+	}
+	id, err := l.repo.CreateLogParser(p.Name, p.IsJson, regexPattern)
 	if err != nil {
 		return err
 	}

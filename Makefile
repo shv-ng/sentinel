@@ -17,8 +17,12 @@ up:
 	$(DC) up
 
 ## Build services without cache
-build:
+build-no-cache:
 	$(DC) build --no-cache
+
+## Build services with cache
+build:
+	$(DC) build
 
 ## Stop and remove containers, networks, volumes, and images
 down:

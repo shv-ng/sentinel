@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.31.1
-// source: proto/proto/log_ingestor.proto
+// source: proto/log_ingestor.proto
 
 package logging
 
@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LogIngestor_SendLogParser_FullMethodName = "/logging.LogIngestor/SendLogParser"
+	LogIngestor_CreateLogParserFormat_FullMethodName = "/logging.LogIngestor/CreateLogParserFormat"
 )
 
 // LogIngestorClient is the client API for LogIngestor service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LogIngestorClient interface {
-	SendLogParser(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error)
+	CreateLogParserFormat(ctx context.Context, in *ParserFormatRequest, opts ...grpc.CallOption) (*ParserFormatResponse, error)
 }
 
 type logIngestorClient struct {
@@ -37,10 +37,10 @@ func NewLogIngestorClient(cc grpc.ClientConnInterface) LogIngestorClient {
 	return &logIngestorClient{cc}
 }
 
-func (c *logIngestorClient) SendLogParser(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error) {
+func (c *logIngestorClient) CreateLogParserFormat(ctx context.Context, in *ParserFormatRequest, opts ...grpc.CallOption) (*ParserFormatResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LogResponse)
-	err := c.cc.Invoke(ctx, LogIngestor_SendLogParser_FullMethodName, in, out, cOpts...)
+	out := new(ParserFormatResponse)
+	err := c.cc.Invoke(ctx, LogIngestor_CreateLogParserFormat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *logIngestorClient) SendLogParser(ctx context.Context, in *LogRequest, o
 // All implementations must embed UnimplementedLogIngestorServer
 // for forward compatibility.
 type LogIngestorServer interface {
-	SendLogParser(context.Context, *LogRequest) (*LogResponse, error)
+	CreateLogParserFormat(context.Context, *ParserFormatRequest) (*ParserFormatResponse, error)
 	mustEmbedUnimplementedLogIngestorServer()
 }
 
@@ -62,8 +62,8 @@ type LogIngestorServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLogIngestorServer struct{}
 
-func (UnimplementedLogIngestorServer) SendLogParser(context.Context, *LogRequest) (*LogResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendLogParser not implemented")
+func (UnimplementedLogIngestorServer) CreateLogParserFormat(context.Context, *ParserFormatRequest) (*ParserFormatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateLogParserFormat not implemented")
 }
 func (UnimplementedLogIngestorServer) mustEmbedUnimplementedLogIngestorServer() {}
 func (UnimplementedLogIngestorServer) testEmbeddedByValue()                     {}
@@ -86,20 +86,20 @@ func RegisterLogIngestorServer(s grpc.ServiceRegistrar, srv LogIngestorServer) {
 	s.RegisterService(&LogIngestor_ServiceDesc, srv)
 }
 
-func _LogIngestor_SendLogParser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogRequest)
+func _LogIngestor_CreateLogParserFormat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ParserFormatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LogIngestorServer).SendLogParser(ctx, in)
+		return srv.(LogIngestorServer).CreateLogParserFormat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LogIngestor_SendLogParser_FullMethodName,
+		FullMethod: LogIngestor_CreateLogParserFormat_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LogIngestorServer).SendLogParser(ctx, req.(*LogRequest))
+		return srv.(LogIngestorServer).CreateLogParserFormat(ctx, req.(*ParserFormatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,10 +112,10 @@ var LogIngestor_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LogIngestorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendLogParser",
-			Handler:    _LogIngestor_SendLogParser_Handler,
+			MethodName: "CreateLogParserFormat",
+			Handler:    _LogIngestor_CreateLogParserFormat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/proto/log_ingestor.proto",
+	Metadata: "proto/log_ingestor.proto",
 }

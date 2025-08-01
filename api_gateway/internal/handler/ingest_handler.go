@@ -10,7 +10,7 @@ import (
 )
 
 type IngestHandler interface {
-	HandleIngest(w http.ResponseWriter, r *http.Request)
+	CreateLogFormat(w http.ResponseWriter, r *http.Request)
 }
 type ingestHandler struct {
 	service service.IngestorService
@@ -20,13 +20,13 @@ func NewIngestHandler(s service.IngestorService) IngestHandler {
 	return &ingestHandler{s}
 }
 
-func (h *ingestHandler) HandleIngest(w http.ResponseWriter, r *http.Request) {
+func (h *ingestHandler) CreateLogFormat(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil || !utils.IsValidJSON(body) {
 		utils.ErrorJSON(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
-	res, err := h.service.SendLogParser(string(body))
+	res, err := h.service.CreateLogFormat(string(body))
 	if err != nil {
 		utils.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("%v", err))
 		return

@@ -18,7 +18,7 @@ type LogField struct {
 	Description    *string   `json:"description"`
 }
 
-type LogParser struct {
+type LogParserFmt struct {
 	ID           uuid.UUID `json:"id"`
 	Name         string    `json:"name"`
 	IsJson       bool      `json:"is_json"`

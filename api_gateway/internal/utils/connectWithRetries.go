@@ -31,7 +31,7 @@ func ConnectWithRetry(address string, maxRetries int) (*grpc.ClientConn, error) 
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		client := pb.NewLogIngestorClient(conn)
 
-		_, testErr := client.SendLogParser(ctx, &pb.LogRequest{
+		_, testErr := client.CreateLogParserFormat(ctx, &pb.ParserFormatRequest{
 			JsonPayload: `{}`,
 		})
 		cancel()

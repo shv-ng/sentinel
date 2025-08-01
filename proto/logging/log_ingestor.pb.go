@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.31.1
-// source: proto/proto/log_ingestor.proto
+// source: proto/log_ingestor.proto
 
 package logging
 
@@ -21,28 +21,28 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type LogRequest struct {
+type ParserFormatRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	JsonPayload   string                 `protobuf:"bytes,1,opt,name=json_payload,json=jsonPayload,proto3" json:"json_payload,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *LogRequest) Reset() {
-	*x = LogRequest{}
-	mi := &file_proto_proto_log_ingestor_proto_msgTypes[0]
+func (x *ParserFormatRequest) Reset() {
+	*x = ParserFormatRequest{}
+	mi := &file_proto_log_ingestor_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *LogRequest) String() string {
+func (x *ParserFormatRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LogRequest) ProtoMessage() {}
+func (*ParserFormatRequest) ProtoMessage() {}
 
-func (x *LogRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_proto_log_ingestor_proto_msgTypes[0]
+func (x *ParserFormatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_log_ingestor_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -53,19 +53,19 @@ func (x *LogRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LogRequest.ProtoReflect.Descriptor instead.
-func (*LogRequest) Descriptor() ([]byte, []int) {
-	return file_proto_proto_log_ingestor_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use ParserFormatRequest.ProtoReflect.Descriptor instead.
+func (*ParserFormatRequest) Descriptor() ([]byte, []int) {
+	return file_proto_log_ingestor_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *LogRequest) GetJsonPayload() string {
+func (x *ParserFormatRequest) GetJsonPayload() string {
 	if x != nil {
 		return x.JsonPayload
 	}
 	return ""
 }
 
-type LogResponse struct {
+type ParserFormatResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // True if log was accepted
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`  // Optional response or error message
@@ -73,21 +73,21 @@ type LogResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *LogResponse) Reset() {
-	*x = LogResponse{}
-	mi := &file_proto_proto_log_ingestor_proto_msgTypes[1]
+func (x *ParserFormatResponse) Reset() {
+	*x = ParserFormatResponse{}
+	mi := &file_proto_log_ingestor_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *LogResponse) String() string {
+func (x *ParserFormatResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LogResponse) ProtoMessage() {}
+func (*ParserFormatResponse) ProtoMessage() {}
 
-func (x *LogResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_proto_log_ingestor_proto_msgTypes[1]
+func (x *ParserFormatResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_log_ingestor_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -98,59 +98,58 @@ func (x *LogResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LogResponse.ProtoReflect.Descriptor instead.
-func (*LogResponse) Descriptor() ([]byte, []int) {
-	return file_proto_proto_log_ingestor_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use ParserFormatResponse.ProtoReflect.Descriptor instead.
+func (*ParserFormatResponse) Descriptor() ([]byte, []int) {
+	return file_proto_log_ingestor_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *LogResponse) GetSuccess() bool {
+func (x *ParserFormatResponse) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
 	return false
 }
 
-func (x *LogResponse) GetMessage() string {
+func (x *ParserFormatResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
 	return ""
 }
 
-var File_proto_proto_log_ingestor_proto protoreflect.FileDescriptor
+var File_proto_log_ingestor_proto protoreflect.FileDescriptor
 
-const file_proto_proto_log_ingestor_proto_rawDesc = "" +
+const file_proto_log_ingestor_proto_rawDesc = "" +
 	"\n" +
-	"\x1eproto/proto/log_ingestor.proto\x12\alogging\"/\n" +
-	"\n" +
-	"LogRequest\x12!\n" +
-	"\fjson_payload\x18\x01 \x01(\tR\vjsonPayload\"A\n" +
-	"\vLogResponse\x12\x18\n" +
+	"\x18proto/log_ingestor.proto\x12\alogging\"8\n" +
+	"\x13ParserFormatRequest\x12!\n" +
+	"\fjson_payload\x18\x01 \x01(\tR\vjsonPayload\"J\n" +
+	"\x14ParserFormatResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2I\n" +
-	"\vLogIngestor\x12:\n" +
-	"\rSendLogParser\x12\x13.logging.LogRequest\x1a\x14.logging.LogResponseB\x14Z\x12./logging/;loggingb\x06proto3"
+	"\amessage\x18\x02 \x01(\tR\amessage2c\n" +
+	"\vLogIngestor\x12T\n" +
+	"\x15CreateLogParserFormat\x12\x1c.logging.ParserFormatRequest\x1a\x1d.logging.ParserFormatResponseB\x14Z\x12./logging/;loggingb\x06proto3"
 
 var (
-	file_proto_proto_log_ingestor_proto_rawDescOnce sync.Once
-	file_proto_proto_log_ingestor_proto_rawDescData []byte
+	file_proto_log_ingestor_proto_rawDescOnce sync.Once
+	file_proto_log_ingestor_proto_rawDescData []byte
 )
 
-func file_proto_proto_log_ingestor_proto_rawDescGZIP() []byte {
-	file_proto_proto_log_ingestor_proto_rawDescOnce.Do(func() {
-		file_proto_proto_log_ingestor_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_proto_log_ingestor_proto_rawDesc), len(file_proto_proto_log_ingestor_proto_rawDesc)))
+func file_proto_log_ingestor_proto_rawDescGZIP() []byte {
+	file_proto_log_ingestor_proto_rawDescOnce.Do(func() {
+		file_proto_log_ingestor_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_log_ingestor_proto_rawDesc), len(file_proto_log_ingestor_proto_rawDesc)))
 	})
-	return file_proto_proto_log_ingestor_proto_rawDescData
+	return file_proto_log_ingestor_proto_rawDescData
 }
 
-var file_proto_proto_log_ingestor_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_proto_log_ingestor_proto_goTypes = []any{
-	(*LogRequest)(nil),  // 0: logging.LogRequest
-	(*LogResponse)(nil), // 1: logging.LogResponse
+var file_proto_log_ingestor_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_log_ingestor_proto_goTypes = []any{
+	(*ParserFormatRequest)(nil),  // 0: logging.ParserFormatRequest
+	(*ParserFormatResponse)(nil), // 1: logging.ParserFormatResponse
 }
-var file_proto_proto_log_ingestor_proto_depIdxs = []int32{
-	0, // 0: logging.LogIngestor.SendLogParser:input_type -> logging.LogRequest
-	1, // 1: logging.LogIngestor.SendLogParser:output_type -> logging.LogResponse
+var file_proto_log_ingestor_proto_depIdxs = []int32{
+	0, // 0: logging.LogIngestor.CreateLogParserFormat:input_type -> logging.ParserFormatRequest
+	1, // 1: logging.LogIngestor.CreateLogParserFormat:output_type -> logging.ParserFormatResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -158,26 +157,26 @@ var file_proto_proto_log_ingestor_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_proto_log_ingestor_proto_init() }
-func file_proto_proto_log_ingestor_proto_init() {
-	if File_proto_proto_log_ingestor_proto != nil {
+func init() { file_proto_log_ingestor_proto_init() }
+func file_proto_log_ingestor_proto_init() {
+	if File_proto_log_ingestor_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_proto_log_ingestor_proto_rawDesc), len(file_proto_proto_log_ingestor_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_log_ingestor_proto_rawDesc), len(file_proto_log_ingestor_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_proto_log_ingestor_proto_goTypes,
-		DependencyIndexes: file_proto_proto_log_ingestor_proto_depIdxs,
-		MessageInfos:      file_proto_proto_log_ingestor_proto_msgTypes,
+		GoTypes:           file_proto_log_ingestor_proto_goTypes,
+		DependencyIndexes: file_proto_log_ingestor_proto_depIdxs,
+		MessageInfos:      file_proto_log_ingestor_proto_msgTypes,
 	}.Build()
-	File_proto_proto_log_ingestor_proto = out.File
-	file_proto_proto_log_ingestor_proto_goTypes = nil
-	file_proto_proto_log_ingestor_proto_depIdxs = nil
+	File_proto_log_ingestor_proto = out.File
+	file_proto_log_ingestor_proto_goTypes = nil
+	file_proto_log_ingestor_proto_depIdxs = nil
 }

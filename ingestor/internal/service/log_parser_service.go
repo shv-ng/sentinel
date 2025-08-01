@@ -8,7 +8,7 @@ import (
 )
 
 type LogParserService interface {
-	CreateLogParser(jsonData string) error
+	CreateLogFormat(jsonData string) error
 }
 
 type logParserService struct {
@@ -19,7 +19,7 @@ func NewLogParserService(repo repo.LogParserRepo) LogParserService {
 	return &logParserService{repo: repo}
 }
 
-func (l *logParserService) CreateLogParser(jsonData string) error {
+func (s *logParserService) CreateLogFormat(jsonData string) error {
 	var p struct {
 		Name         string            `json:"name"`
 		IsJson       bool              `json:"is_json"`
@@ -41,13 +41,13 @@ func (l *logParserService) CreateLogParser(jsonData string) error {
 	if p.Name == "" {
 		return nil
 	}
-	id, err := l.repo.CreateLogParser(p.Name, p.IsJson, regexPattern)
+	id, err := s.repo.CreateLogParserFmt(p.Name, p.IsJson, regexPattern)
 	if err != nil {
 		return err
 	}
 	for _, field := range p.Fields {
 		field.ParserID = id
-		err := l.repo.CreateLogField(field)
+		err := s.repo.CreateLogField(field)
 		if err != nil {
 			return err
 		}

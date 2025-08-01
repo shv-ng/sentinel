@@ -7,5 +7,5 @@ import (
 )
 
 func registerIngestRoutes(mux *http.ServeMux, h handler.IngestHandler) {
-	mux.HandleFunc("POST /create-parser", h.HandleIngest)
+	mux.HandleFunc("POST /log-formats", h.CreateLogFormat)
 }

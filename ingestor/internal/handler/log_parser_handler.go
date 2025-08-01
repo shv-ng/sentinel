@@ -20,16 +20,16 @@ func NewLogIngestorServer(s service.LogParserService) *LogIngestorServer {
 }
 
 func (s *LogIngestorServer) SendLogParser(
-	ctx context.Context, req *pb.LogRequest,
-) (*pb.LogResponse, error) {
-	err := s.service.CreateLogParser(req.GetJsonPayload())
+	ctx context.Context, req *pb.ParserFormatRequest,
+) (*pb.ParserFormatResponse, error) {
+	err := s.service.CreateLogFormat(req.GetJsonPayload())
 	if err != nil {
-		return &pb.LogResponse{
+		return &pb.ParserFormatResponse{
 			Success: false,
 			Message: fmt.Sprintf("%v", err),
 		}, err
 	}
-	return &pb.LogResponse{
+	return &pb.ParserFormatResponse{
 		Success: true,
 		Message: "Successfully added",
 	}, nil

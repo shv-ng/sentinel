@@ -8,7 +8,7 @@ import (
 )
 
 type LogParserRepo interface {
-	CreateLogParser(name string, is_json bool, regex_pattern string) (uuid.UUID, error)
+	CreateLogParserFmt(name string, is_json bool, regex_pattern string) (uuid.UUID, error)
 	CreateLogField(arg models.LogField) error
 }
 
@@ -22,19 +22,19 @@ func NewLogParserRepo(db *sql.DB) LogParserRepo {
 	}
 }
 
-func (l *logParserRepo) CreateLogParser(name string, is_json bool, regex_pattern string) (uuid.UUID, error) {
+func (r *logParserRepo) CreateLogParserFmt(name string, is_json bool, regex_pattern string) (uuid.UUID, error) {
 	q := `INSERT INTO log_parsers (name, is_json, regex_pattern)
 VALUES ($1, $2, $3)
 RETURNING id;`
 	var id uuid.UUID
-	err := l.db.QueryRow(q, name, is_json, regex_pattern).Scan(&id)
+	err := r.db.QueryRow(q, name, is_json, regex_pattern).Scan(&id)
 	if err != nil {
 		return id, err
 	}
 	return id, nil
 }
 
-func (l *logParserRepo) CreateLogField(arg models.LogField) error {
+func (r *logParserRepo) CreateLogField(arg models.LogField) error {
 	q := `INSERT INTO log_fields (
   parser_id, raw_name, semantic_name, type, datetime_format,
   enum_value, required, description
@@ -42,7 +42,7 @@ func (l *logParserRepo) CreateLogField(arg models.LogField) error {
 VALUES (
   $1, $2, $3, $4, $5, $6, $7, $8
 );`
-	_, err := l.db.Exec(
+	_, err := r.db.Exec(
 		q, arg.ParserID, arg.RawName, arg.SemanticName, arg.Type,
 		arg.DatetimeFormat, arg.EnumValue, arg.Required, arg.Description,
 	)

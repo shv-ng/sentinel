@@ -5,14 +5,14 @@ package logging;
 option go_package = "./logging/;logging";
 
 service LogIngestor {
-  rpc SendLogParser(LogRequest) returns (LogResponse);
+  rpc CreateLogParserFormat(ParserFormatRequest) returns (ParserFormatResponse);
 }
 
-message LogRequest {
+message ParserFormatRequest {
   string json_payload = 1;
 }
 
-message LogResponse {
+message ParserFormatResponse {
   bool success = 1; // True if log was accepted
   string message = 2; // Optional response or error message
 }

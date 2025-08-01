@@ -1,41 +1,10 @@
-# Makefile for Docker Compose operations and proto generation
+.PHONY: help 
+help: ## Show this help message
+	@echo 'Usage: make [target]'
+	@echo ''
+	@echo 'Targets:'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-DC := docker-compose -f ./deploy/docker-compose.yml --env-file .env
-
-.PHONY: migrate up-d up build down redis-cli postgres-cli gen-proto
-
-## Run migration container (exits after completion)
-migrate:
-	$(DC) --profile migration up migration --abort-on-container-exit
-
-## Start services in detached mode
-up-d:
-	$(DC) up -d
-
-## Start services in foreground
-up:
-	$(DC) up
-
-## Build services without cache
-build-no-cache:
-	$(DC) build --no-cache
-
-## Build services with cache
-build:
-	$(DC) build
-
-## Stop and remove containers, networks, volumes, and images
-down:
-	$(DC) down
-
-## Access Redis CLI
-redis-cli:
-	$(DC) exec redis redis-cli
-
-## Access PostgreSQL CLI
-postgres-cli:
-	$(DC) exec postgres psql -U postgres
-
-## Generate Go gRPC code from protobuf files
-gen-proto:
-	protoc --go_out=./proto/ --go-grpc_out=./proto/ --proto_path=. ./proto/proto/*.proto
+.PHONY: dev
+dev: ## Start development environment with hot reload
+	docker-compose -f docker-compose.dev.yml up --build

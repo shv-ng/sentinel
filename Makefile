@@ -1,41 +1,28 @@
-# Makefile for Docker Compose operations and proto generation
+.PHONY: help build up down run fmt lint clean
 
-DC := docker-compose -f ./deploy/docker-compose.yml --env-file .env
+# Default help target
+help: ## Show this help message
+	@echo 'Usage: make [target]'
+	@echo ''
+	@echo 'Targets:'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-.PHONY: migrate up-d up build down redis-cli postgres-cli gen-proto
+# Build the Go project
+build: ## Build the Go application
+	go build -o ./tmp/main ./cmd/app
 
-## Run migration container (exits after completion)
-migrate:
-	$(DC) --profile migration up migration --abort-on-container-exit
+# Run the app directly
+run: build ## Build and run the app
+	./tmp/main
 
-## Start services in detached mode
-up-d:
-	$(DC) up -d
+# Docker: bring services up
+up: ## Start docker-compose in detached mode
+	docker-compose up -d
 
-## Start services in foreground
-up:
-	$(DC) up
+# Docker: stop services
+down: ## Stop docker-compose
+	docker-compose down
 
-## Build services without cache
-build-no-cache:
-	$(DC) build --no-cache
-
-## Build services with cache
-build:
-	$(DC) build
-
-## Stop and remove containers, networks, volumes, and images
-down:
-	$(DC) down
-
-## Access Redis CLI
-redis-cli:
-	$(DC) exec redis redis-cli
-
-## Access PostgreSQL CLI
-postgres-cli:
-	$(DC) exec postgres psql -U postgres
-
-## Generate Go gRPC code from protobuf files
-gen-proto:
-	protoc --go_out=./proto/ --go-grpc_out=./proto/ --proto_path=. ./proto/proto/*.proto
+# Clean build artifacts
+clean: ## Remove built binary
+	rm -rf ./tmp/main

@@ -27,8 +27,10 @@ func (r *repo) CreateFormatParser(name string, is_json bool, regex_pattern strin
 	var id uuid.UUID
 	err := r.db.QueryRow(q, name, is_json, regex_pattern).Scan(&id)
 	if err != nil {
+		log.Printf("[DB ERROR] failed to intsert into log_parsers table '%s': %v", name, err)
 		return id, err
 	}
+	log.Printf("[DB SUCCESS] Inserted parser: %s (id: %s)", name, id)
 	return id, nil
 }
 
@@ -46,7 +48,9 @@ func (r *repo) CreateFormatField(arg logFormatField) error {
 	)
 
 	if err != nil {
+		log.Printf("[DB ERROR] failed to intsert into log_fields table '%s': %v", arg.RawName, err)
 		return err
 	}
+	log.Printf("[DB SUCCESS] Inserted fields: %s", arg.RawName)
 	return nil
 }

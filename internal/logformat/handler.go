@@ -24,14 +24,14 @@ func NewHandler(service LogFormatService) LogFormatHandler {
 func (h *handler) CreateLogFormat(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil || !utils.IsValidJSON(body) {
-		utils.ErrorJSON(w, http.StatusBadRequest, "Invalid JSON")
+		utils.ErrorJSON(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	err = h.service.CreateLogFormat(string(body))
 	if err != nil {
-		utils.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("%v", err))
+		utils.ErrorJSON(w, fmt.Sprintf("%v", err), http.StatusBadRequest)
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"message": "Log format successfully created."})
+	utils.WriteJSON(w, map[string]string{"message": "Log format successfully created."}, http.StatusOK)
 }

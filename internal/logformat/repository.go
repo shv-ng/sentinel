@@ -2,13 +2,15 @@ package logformat
 
 import (
 	"database/sql"
+	"log"
 
 	"github.com/google/uuid"
 )
 
 type LogFormatRepo interface {
 	CreateFormatParser(name string, is_json bool, regex_pattern string) (uuid.UUID, error)
-	CreateFormatField(arg logFormatField) error
+	CreateFormatField(arg LogFormatField) error
+	GetByFormatName(name string) (*LogFormatParser, []LogFormatField, error)
 }
 type repo struct {
 	db *sql.DB
@@ -34,7 +36,7 @@ func (r *repo) CreateFormatParser(name string, is_json bool, regex_pattern strin
 	return id, nil
 }
 
-func (r *repo) CreateFormatField(arg logFormatField) error {
+func (r *repo) CreateFormatField(arg LogFormatField) error {
 	q := `INSERT INTO log_fields (
 	parser_id, raw_name, semantic_name, type, datetime_format,
 	enum_value, required, description
@@ -53,4 +55,54 @@ func (r *repo) CreateFormatField(arg logFormatField) error {
 	}
 	log.Printf("[DB SUCCESS] Inserted fields: %s", arg.RawName)
 	return nil
+}
+
+func (r *repo) GetByFormatName(name string) (*LogFormatParser, []LogFormatField, error) {
+	q := `SELECT id, name, is_json, regex_pattern, created_at, updated_at 
+		  FROM log_parsers WHERE name = $1`
+	var parser LogFormatParser
+	err := r.db.QueryRow(q, name).Scan(
+		&parser.ID, &parser.Name, &parser.IsJson, &parser.RegexPattern,
+		&parser.CreatedAt, &parser.UpdatedAt,
+	)
+	if err != nil {
+		log.Printf("[DB ERROR] Failed to fetch parser '%s': %v", name, err)
+		return nil, nil, err
+	}
+
+	// Get fields for this parser
+	fields, err := r.getFieldsByParserID(parser.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+	log.Printf("[DB SUCCESS] Found parser: %s (id: %s)", parser.Name, parser.ID)
+	return &parser, fields, nil
+}
+
+func (r *repo) getFieldsByParserID(parserID uuid.UUID) ([]LogFormatField, error) {
+	q := `SELECT id, parser_id, raw_name, semantic_name, type, 
+		  datetime_format, enum_value, required, description
+		  FROM log_fields WHERE parser_id = $1 ORDER BY raw_name`
+
+	rows, err := r.db.Query(q, parserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var fields []LogFormatField
+	for rows.Next() {
+		var field LogFormatField
+		err := rows.Scan(
+			&field.ID, &field.ParserID, &field.RawName, &field.SemanticName,
+			&field.Type, &field.DatetimeFormat, &field.EnumValue,
+			&field.Required, &field.Description,
+		)
+		if err != nil {
+			return nil, err
+		}
+		fields = append(fields, field)
+	}
+
+	return fields, nil
 }

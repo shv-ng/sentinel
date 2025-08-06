@@ -13,7 +13,6 @@ func NewRouter(logformatHandler logformat.LogFormatHandler) http.Handler {
 	// Register API routes
 	registerLogformatRoutes(mux, logformatHandler)
 
-	return http.StripPrefix("/v1", mux)
 	handler := middleware.LoggingMiddleware(mux)
 
 	return http.StripPrefix("/v1", handler)
@@ -21,4 +20,6 @@ func NewRouter(logformatHandler logformat.LogFormatHandler) http.Handler {
 
 func registerLogformatRoutes(mux *http.ServeMux, h logformat.LogFormatHandler) {
 	mux.HandleFunc("POST /log-formats", h.CreateLogFormat)
+	mux.HandleFunc("GET /log-formats/{name}", h.GetFormatByName)
+
 }

@@ -4,6 +4,7 @@ import "encoding/json"
 
 type LogFormatService interface {
 	CreateLogFormat(jsonData string) error
+	GetFormatByName(name string) (*LogFormatParser, []LogFormatField, error)
 }
 type service struct {
 	repo LogFormatRepo
@@ -20,7 +21,7 @@ func (s *service) CreateLogFormat(jsonData string) error {
 		Name         string           `json:"name"`
 		IsJson       bool             `json:"is_json"`
 		RegexPattern *string          `json:"regex_pattern"`
-		Fields       []logFormatField `json:"fields"`
+		Fields       []LogFormatField `json:"fields"`
 	}
 
 	err := json.Unmarshal([]byte(jsonData), &p)
@@ -49,4 +50,8 @@ func (s *service) CreateLogFormat(jsonData string) error {
 		}
 	}
 	return nil
+}
+
+func (s *service) GetFormatByName(name string) (*LogFormatParser, []LogFormatField, error) {
+	return s.repo.GetByFormatName(name)
 }

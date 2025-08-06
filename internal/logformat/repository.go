@@ -2,7 +2,6 @@ package logformat
 
 import (
 	"database/sql"
-	"log"
 
 	"github.com/google/uuid"
 )
@@ -11,6 +10,7 @@ type LogFormatRepo interface {
 	CreateFormatParser(name string, is_json bool, regex_pattern string) (uuid.UUID, error)
 	CreateFormatField(arg LogFormatField) error
 	GetByFormatName(name string) (*LogFormatParser, []LogFormatField, error)
+	GetAllFormats() ([]LogFormatParser, error)
 }
 type repo struct {
 	db *sql.DB
@@ -29,10 +29,8 @@ func (r *repo) CreateFormatParser(name string, is_json bool, regex_pattern strin
 	var id uuid.UUID
 	err := r.db.QueryRow(q, name, is_json, regex_pattern).Scan(&id)
 	if err != nil {
-		log.Printf("[DB ERROR] failed to intsert into log_parsers table '%s': %v", name, err)
 		return id, err
 	}
-	log.Printf("[DB SUCCESS] Inserted parser: %s (id: %s)", name, id)
 	return id, nil
 }
 
@@ -50,23 +48,20 @@ func (r *repo) CreateFormatField(arg LogFormatField) error {
 	)
 
 	if err != nil {
-		log.Printf("[DB ERROR] failed to intsert into log_fields table '%s': %v", arg.RawName, err)
 		return err
 	}
-	log.Printf("[DB SUCCESS] Inserted fields: %s", arg.RawName)
 	return nil
 }
 
 func (r *repo) GetByFormatName(name string) (*LogFormatParser, []LogFormatField, error) {
 	q := `SELECT id, name, is_json, regex_pattern, created_at, updated_at 
-		  FROM log_parsers WHERE name = $1`
+	FROM log_parsers WHERE name = $1`
 	var parser LogFormatParser
 	err := r.db.QueryRow(q, name).Scan(
 		&parser.ID, &parser.Name, &parser.IsJson, &parser.RegexPattern,
 		&parser.CreatedAt, &parser.UpdatedAt,
 	)
 	if err != nil {
-		log.Printf("[DB ERROR] Failed to fetch parser '%s': %v", name, err)
 		return nil, nil, err
 	}
 
@@ -75,14 +70,38 @@ func (r *repo) GetByFormatName(name string) (*LogFormatParser, []LogFormatField,
 	if err != nil {
 		return nil, nil, err
 	}
-	log.Printf("[DB SUCCESS] Found parser: %s (id: %s)", parser.Name, parser.ID)
 	return &parser, fields, nil
+}
+
+func (r *repo) GetAllFormats() ([]LogFormatParser, error) {
+	q := `SELECT id, name, is_json, regex_pattern, created_at, updated_at 
+	FROM log_parsers ORDER BY created_at DESC`
+
+	rows, err := r.db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var parsers []LogFormatParser
+	for rows.Next() {
+		var parser LogFormatParser
+		err := rows.Scan(
+			&parser.ID, &parser.Name, &parser.IsJson, &parser.RegexPattern,
+			&parser.CreatedAt, &parser.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		parsers = append(parsers, parser)
+	}
+	return parsers, nil
 }
 
 func (r *repo) getFieldsByParserID(parserID uuid.UUID) ([]LogFormatField, error) {
 	q := `SELECT id, parser_id, raw_name, semantic_name, type, 
-		  datetime_format, enum_value, required, description
-		  FROM log_fields WHERE parser_id = $1 ORDER BY raw_name`
+	datetime_format, enum_value, required, description
+	FROM log_fields WHERE parser_id = $1 ORDER BY raw_name`
 
 	rows, err := r.db.Query(q, parserID)
 	if err != nil {

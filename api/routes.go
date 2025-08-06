@@ -21,5 +21,6 @@ func NewRouter(logformatHandler logformat.LogFormatHandler) http.Handler {
 func registerLogformatRoutes(mux *http.ServeMux, h logformat.LogFormatHandler) {
 	mux.HandleFunc("POST /log-formats", h.CreateLogFormat)
 	mux.HandleFunc("GET /log-formats/{name}", h.GetFormatByName)
+	mux.HandleFunc("GET /log-formats", h.GetAllFormats)
 
 }

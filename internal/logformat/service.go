@@ -5,6 +5,7 @@ import "encoding/json"
 type LogFormatService interface {
 	CreateLogFormat(jsonData string) error
 	GetFormatByName(name string) (*LogFormatParser, []LogFormatField, error)
+	GetAllFormats() ([]LogFormatParser, error)
 }
 type service struct {
 	repo LogFormatRepo
@@ -54,4 +55,8 @@ func (s *service) CreateLogFormat(jsonData string) error {
 
 func (s *service) GetFormatByName(name string) (*LogFormatParser, []LogFormatField, error) {
 	return s.repo.GetByFormatName(name)
+}
+
+func (s *service) GetAllFormats() ([]LogFormatParser, error) {
+	return s.repo.GetAllFormats()
 }

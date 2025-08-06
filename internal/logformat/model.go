@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type logFormatField struct {
+type LogFormatField struct {
 	ID             uuid.UUID `json:"id"`
 	ParserID       uuid.UUID `json:"parser_id"`
 	RawName        string    `json:"raw_name"`
@@ -18,7 +18,7 @@ type logFormatField struct {
 	Description    *string   `json:"description"`
 }
 
-type logFormatParser struct {
+type LogFormatParser struct {
 	ID           uuid.UUID `json:"id"`
 	Name         string    `json:"name"`
 	IsJson       bool      `json:"is_json"`

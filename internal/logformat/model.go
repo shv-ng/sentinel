@@ -14,14 +14,14 @@ type LogFormatField struct {
 	Type           string    `json:"type"`
 	DatetimeFormat *string   `json:"datetime_format"`
 	EnumValue      *string   `json:"enum_value"`
-	Required       *string   `json:"required"`
+	Required       bool      `json:"required"`
 	Description    *string   `json:"description"`
 }
 
 type LogFormatParser struct {
 	ID           uuid.UUID `json:"id"`
 	Name         string    `json:"name"`
-	IsJson       bool      `json:"is_json"`
+	IsJSON       bool      `json:"is_json"`
 	RegexPattern *string   `json:"regex_pattern"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`

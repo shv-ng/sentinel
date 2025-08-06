@@ -20,7 +20,7 @@ func NewService(repo LogFormatRepo) LogFormatService {
 func (s *service) CreateLogFormat(jsonData string) error {
 	var p struct {
 		Name         string           `json:"name"`
-		IsJson       bool             `json:"is_json"`
+		IsJSON       bool             `json:"is_json"`
 		RegexPattern *string          `json:"regex_pattern"`
 		Fields       []LogFormatField `json:"fields"`
 	}
@@ -39,7 +39,7 @@ func (s *service) CreateLogFormat(jsonData string) error {
 	if p.Name == "" {
 		return nil
 	}
-	id, err := s.repo.CreateFormatParser(p.Name, p.IsJson, regexPattern)
+	id, err := s.repo.CreateFormatParser(p.Name, p.IsJSON, regexPattern)
 	if err != nil {
 		return err
 	}

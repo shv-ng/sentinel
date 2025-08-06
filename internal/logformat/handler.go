@@ -12,6 +12,7 @@ import (
 type LogFormatHandler interface {
 	CreateLogFormat(w http.ResponseWriter, r *http.Request)
 	GetFormatByName(w http.ResponseWriter, r *http.Request)
+	GetAllFormats(w http.ResponseWriter, r *http.Request)
 }
 type handler struct {
 	service LogFormatService
@@ -61,4 +62,17 @@ func (h *handler) GetFormatByName(w http.ResponseWriter, r *http.Request) {
 		Fields: fields,
 	}
 	utils.WriteJSON(w, res, http.StatusOK)
+}
+
+func (h *handler) GetAllFormats(w http.ResponseWriter, r *http.Request) {
+	parsers, err := h.service.GetAllFormats()
+	if err != nil {
+		if err == sql.ErrNoRows {
+			utils.ErrorJSON(w, "parser not found", http.StatusNotFound)
+			return
+		}
+		utils.ErrorJSON(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	utils.WriteJSON(w, parsers, http.StatusOK)
 }

@@ -14,6 +14,7 @@ func NewRouter(logformatHandler logformat.LogFormatHandler) http.Handler {
 	registerLogformatRoutes(mux, logformatHandler)
 
 	handler := middleware.LoggingMiddleware(mux)
+	handler = middleware.CorsMiddleware(handler)
 
 	return http.StripPrefix("/v1", handler)
 }

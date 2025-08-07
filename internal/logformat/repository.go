@@ -58,7 +58,7 @@ func (r *repo) GetByFormatName(name string) (*LogFormatParser, []LogFormatField,
 	FROM log_parsers WHERE name = $1`
 	var parser LogFormatParser
 	err := r.db.QueryRow(q, name).Scan(
-		&parser.ID, &parser.Name, &parser.IsJson, &parser.RegexPattern,
+		&parser.ID, &parser.Name, &parser.IsJSON, &parser.RegexPattern,
 		&parser.CreatedAt, &parser.UpdatedAt,
 	)
 	if err != nil {
@@ -87,7 +87,7 @@ func (r *repo) GetAllFormats() ([]LogFormatParser, error) {
 	for rows.Next() {
 		var parser LogFormatParser
 		err := rows.Scan(
-			&parser.ID, &parser.Name, &parser.IsJson, &parser.RegexPattern,
+			&parser.ID, &parser.Name, &parser.IsJSON, &parser.RegexPattern,
 			&parser.CreatedAt, &parser.UpdatedAt,
 		)
 		if err != nil {

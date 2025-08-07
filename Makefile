@@ -26,3 +26,6 @@ down: ## Stop docker-compose
 # Clean build artifacts
 clean: ## Remove built binary
 	rm -rf ./tmp/main
+
+test: ## Test all test files
+	go test ./... 

@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/ShivangSrivastava/sentinel/internal/config"
 )
 
 func runMigrations(db *sql.DB, migrationsPath string) error {
@@ -28,8 +30,8 @@ func runMigrations(db *sql.DB, migrationsPath string) error {
 }
 
 // runMigrationsIfRequired runs database migrations when RUN_MIGRATIONS=true
-func RunMigrationsIfRequired(db *sql.DB) bool {
-	if os.Getenv("RUN_MIGRATIONS") != "true" {
+func RunMigrationsIfRequired(cfg config.Config, db *sql.DB) bool {
+	if cfg.RunMigrations != "true" {
 		return false
 	}
 

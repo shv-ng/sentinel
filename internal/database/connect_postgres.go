@@ -3,14 +3,15 @@ package database
 import (
 	"database/sql"
 	"log"
-	"os"
 	"time"
+
+	"github.com/ShivangSrivastava/sentinel/internal/config"
 )
 
-// connectToDatabase establishes database connection and verifies connectivity
-func ConnectToPostgres() *sql.DB {
+// establishes database connection and verifies connectivity
+func ConnectPostgres(cfg config.Config) *sql.DB {
 
-	dbURL := os.Getenv("POSTGRES_URL")
+	dbURL := cfg.PostgresDSN
 	if dbURL == "" {
 		log.Fatalln("POSTGRES_URL not found in environment")
 	}

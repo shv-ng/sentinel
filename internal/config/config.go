@@ -9,12 +9,6 @@ import (
 type Config struct {
 	PostgresDSN string
 
-	ClickHouseHost     string
-	ClickHousePort     string
-	ClickHouseDatabase string
-	ClickHouseUsername string
-	ClickHousePassword string
-
 	RunMigrations string
 
 	Port string
@@ -27,11 +21,9 @@ func Load() *Config {
 	cfg := &Config{
 		PostgresDSN: getEnv("POSTGRES_URL", "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"),
 
-		ClickHouseHost:     getEnv("CLICKHOUSE_HOST", "localhost"),
-		ClickHousePort:     getEnv("CLICKHOUSE_TCP_PORT", "9000"),
-		ClickHouseDatabase: getEnv("CLICKHOUSE_DB", "default"),
-		ClickHouseUsername: getEnv("CLICKHOUSE_USER", "default"),
-		ClickHousePassword: getEnv("CLICKHOUSE_PASSWORD", ""),
+		RunMigrations: getEnv("RUN_MIGRATIONS", "false"),
+
+		Port: getEnv("PORT", "8080"),
 	}
 
 	return cfg

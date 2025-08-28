@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/ShivangSrivastava/sentinel/internal/shared"
 	"github.com/ShivangSrivastava/sentinel/pkg/utils"
 )
 
@@ -55,8 +56,8 @@ func (h *handler) GetFormatByName(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res := struct {
-		Parser *LogFormatParser `json:"parser"`
-		Fields []LogFormatField `json:"fields"`
+		Parser *shared.LogFormatParser `json:"parser"`
+		Fields []shared.LogFormatField `json:"fields"`
 	}{
 		Parser: parser,
 		Fields: fields,

@@ -11,10 +11,6 @@ import (
 // establishes database connection and verifies connectivity
 func ConnectPostgres(cfg config.Config) *sql.DB {
 
-	dbURL := cfg.PostgresDSN
-	if dbURL == "" {
-		log.Fatalln("POSTGRES_URL not found in environment")
-	}
 	const maxRetries = 5
 	const baseDelay = time.Second
 
@@ -22,13 +18,13 @@ func ConnectPostgres(cfg config.Config) *sql.DB {
 	var err error
 
 	for attempt := 1; attempt <= maxRetries; attempt++ {
-		log.Printf("Attempting database connection (attempt %d/%d)", attempt, maxRetries)
+		log.Printf("Attempting postgres connection (attempt %d/%d)", attempt, maxRetries)
 
-		db, err = sql.Open("postgres", dbURL)
+		db, err = sql.Open("postgres", cfg.PostgresDSN)
 		if err != nil {
-			log.Printf("Failed to open database connection on attempt %d: %v", attempt, err)
+			log.Printf("Failed to open postgres connection on attempt %d: %v", attempt, err)
 			if attempt == maxRetries {
-				log.Fatalf("Failed to open database connection after %d attempts: %v", maxRetries, err)
+				log.Fatalf("Failed to open postgres connection after %d attempts: %v", maxRetries, err)
 			}
 			time.Sleep(baseDelay * time.Duration(attempt)) // Exponential backoff
 			continue
@@ -36,16 +32,16 @@ func ConnectPostgres(cfg config.Config) *sql.DB {
 
 		// Verify database connectivity
 		if err = db.Ping(); err != nil {
-			log.Printf("Database not reachable on attempt %d: %v", attempt, err)
+			log.Printf("Postgres not reachable on attempt %d: %v", attempt, err)
 			db.Close() // Close the connection before retrying
 			if attempt == maxRetries {
-				log.Fatalf("Database not reachable after %d attempts: %v", maxRetries, err)
+				log.Fatalf("Postgres not reachable after %d attempts: %v", maxRetries, err)
 			}
 			time.Sleep(baseDelay * time.Duration(attempt)) // Exponential backoff
 			continue
 		}
 
-		log.Println("Database connected successfully")
+		log.Println("Postgres connected successfully")
 		return db
 	}
 	return nil

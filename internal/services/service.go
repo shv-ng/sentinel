@@ -1,11 +1,15 @@
 package logformat
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/ShivangSrivastava/sentinel/internal/shared"
+)
 
 type LogFormatService interface {
 	CreateLogFormat(jsonData string) error
-	GetFormatByName(name string) (*LogFormatParser, []LogFormatField, error)
-	GetAllFormats() ([]LogFormatParser, error)
+	GetFormatByName(name string) (*shared.LogFormatParser, []shared.LogFormatField, error)
+	GetAllFormats() ([]shared.LogFormatParser, error)
 }
 type service struct {
 	repo LogFormatRepo
@@ -19,10 +23,10 @@ func NewService(repo LogFormatRepo) LogFormatService {
 
 func (s *service) CreateLogFormat(jsonData string) error {
 	var p struct {
-		Name         string           `json:"name"`
-		IsJSON       bool             `json:"is_json"`
-		RegexPattern *string          `json:"regex_pattern"`
-		Fields       []LogFormatField `json:"fields"`
+		Name         string                  `json:"name"`
+		IsJSON       bool                    `json:"is_json"`
+		RegexPattern *string                 `json:"regex_pattern"`
+		Fields       []shared.LogFormatField `json:"fields"`
 	}
 
 	err := json.Unmarshal([]byte(jsonData), &p)
@@ -53,10 +57,10 @@ func (s *service) CreateLogFormat(jsonData string) error {
 	return nil
 }
 
-func (s *service) GetFormatByName(name string) (*LogFormatParser, []LogFormatField, error) {
+func (s *service) GetFormatByName(name string) (*shared.LogFormatParser, []shared.LogFormatField, error) {
 	return s.repo.GetByFormatName(name)
 }
 
-func (s *service) GetAllFormats() ([]LogFormatParser, error) {
+func (s *service) GetAllFormats() ([]shared.LogFormatParser, error) {
 	return s.repo.GetAllFormats()
 }

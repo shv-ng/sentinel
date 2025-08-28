@@ -19,9 +19,14 @@ func main() {
 
 	// Connect to database
 	pgDB := database.ConnectPostgres(*cfg)
+
 	// Run migrations if needed
-	if ok := database.RunMigrationsIfRequired(*cfg, pgDB); ok {
-		return
+	if cfg.RunMigrations == "true" {
+		log.Println("Running migrations")
+		if err := database.RunPostgresMigrations(pgDB, "migrations/"); err != nil {
+			log.Fatalf("PostgreSQL migrations failed: %v", err)
+		}
+		log.Println("Migrations completed")
 	}
 	defer pgDB.Close()
 
@@ -37,5 +42,5 @@ func startServer(cfg config.Config, db *sql.DB) {
 	r := api.NewRouter(*&logformatHandler)
 
 	log.Println("Server is running on :", cfg.Port)
-	log.Fatalf("Failed to start server: %v", http.ListenAndServe(cfg.Port, r))
+	log.Fatalf("Failed to start server: %v", http.ListenAndServe(":"+cfg.Port, r))
 }

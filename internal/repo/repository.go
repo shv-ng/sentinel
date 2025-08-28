@@ -3,14 +3,15 @@ package logformat
 import (
 	"database/sql"
 
+	"github.com/ShivangSrivastava/sentinel/internal/shared"
 	"github.com/google/uuid"
 )
 
 type LogFormatRepo interface {
 	CreateFormatParser(name string, is_json bool, regex_pattern string) (uuid.UUID, error)
-	CreateFormatField(arg LogFormatField) error
-	GetByFormatName(name string) (*LogFormatParser, []LogFormatField, error)
-	GetAllFormats() ([]LogFormatParser, error)
+	CreateFormatField(arg shared.LogFormatField) error
+	GetByFormatName(name string) (*shared.LogFormatParser, []shared.LogFormatField, error)
+	GetAllFormats() ([]shared.LogFormatParser, error)
 }
 type repo struct {
 	db *sql.DB
@@ -34,7 +35,7 @@ func (r *repo) CreateFormatParser(name string, is_json bool, regex_pattern strin
 	return id, nil
 }
 
-func (r *repo) CreateFormatField(arg LogFormatField) error {
+func (r *repo) CreateFormatField(arg shared.LogFormatField) error {
 	q := `INSERT INTO log_fields (
 	parser_id, raw_name, semantic_name, type, datetime_format,
 	enum_value, required, description
@@ -53,10 +54,10 @@ func (r *repo) CreateFormatField(arg LogFormatField) error {
 	return nil
 }
 
-func (r *repo) GetByFormatName(name string) (*LogFormatParser, []LogFormatField, error) {
+func (r *repo) GetByFormatName(name string) (*shared.LogFormatParser, []shared.LogFormatField, error) {
 	q := `SELECT id, name, is_json, regex_pattern, created_at, updated_at 
 	FROM log_parsers WHERE name = $1`
-	var parser LogFormatParser
+	var parser shared.LogFormatParser
 	err := r.db.QueryRow(q, name).Scan(
 		&parser.ID, &parser.Name, &parser.IsJSON, &parser.RegexPattern,
 		&parser.CreatedAt, &parser.UpdatedAt,
@@ -73,7 +74,7 @@ func (r *repo) GetByFormatName(name string) (*LogFormatParser, []LogFormatField,
 	return &parser, fields, nil
 }
 
-func (r *repo) GetAllFormats() ([]LogFormatParser, error) {
+func (r *repo) GetAllFormats() ([]shared.LogFormatParser, error) {
 	q := `SELECT id, name, is_json, regex_pattern, created_at, updated_at 
 	FROM log_parsers ORDER BY created_at DESC`
 
@@ -83,9 +84,9 @@ func (r *repo) GetAllFormats() ([]LogFormatParser, error) {
 	}
 	defer rows.Close()
 
-	var parsers []LogFormatParser
+	var parsers []shared.LogFormatParser
 	for rows.Next() {
-		var parser LogFormatParser
+		var parser shared.LogFormatParser
 		err := rows.Scan(
 			&parser.ID, &parser.Name, &parser.IsJSON, &parser.RegexPattern,
 			&parser.CreatedAt, &parser.UpdatedAt,
@@ -98,7 +99,7 @@ func (r *repo) GetAllFormats() ([]LogFormatParser, error) {
 	return parsers, nil
 }
 
-func (r *repo) getFieldsByParserID(parserID uuid.UUID) ([]LogFormatField, error) {
+func (r *repo) getFieldsByParserID(parserID uuid.UUID) ([]shared.LogFormatField, error) {
 	q := `SELECT id, parser_id, raw_name, semantic_name, type, 
 	datetime_format, enum_value, required, description
 	FROM log_fields WHERE parser_id = $1 ORDER BY raw_name`
@@ -109,9 +110,9 @@ func (r *repo) getFieldsByParserID(parserID uuid.UUID) ([]LogFormatField, error)
 	}
 	defer rows.Close()
 
-	var fields []LogFormatField
+	var fields []shared.LogFormatField
 	for rows.Next() {
-		var field LogFormatField
+		var field shared.LogFormatField
 		err := rows.Scan(
 			&field.ID, &field.ParserID, &field.RawName, &field.SemanticName,
 			&field.Type, &field.DatetimeFormat, &field.EnumValue,

@@ -1,44 +1,54 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/ShivangSrivastava/sentinel/internal/config"
 )
 
-func runMigrations(db *sql.DB, migrationsPath string) error {
-	files, err := filepath.Glob(filepath.Join(migrationsPath, "*.sql"))
+// DBExecutor interface for any database that can execute SQL
+type dBExecutor interface {
+	Exec(ctx context.Context, query string) error
+}
+
+// PostgreSQL wrapper to implement DBExecutor
+type postgresExecutor struct {
+	DB *sql.DB
+}
+
+func (p *postgresExecutor) Exec(ctx context.Context, query string) error {
+	_, err := p.DB.Exec(query)
+	return err
+}
+
+// Generic migration runner
+func RunMigrations(executor dBExecutor, migrationsPath, pattern string) error {
+	files, err := filepath.Glob(filepath.Join(migrationsPath, pattern))
 	if err != nil {
 		return fmt.Errorf("error reading migration files: %w", err)
 	}
 
+	ctx := context.Background()
 	for _, file := range files {
 		sqlBytes, err := os.ReadFile(file)
 		if err != nil {
 			return fmt.Errorf("error reading %s: %w", file, err)
 		}
-		if _, err := db.Exec(string(sqlBytes)); err != nil {
+
+		if err := executor.Exec(ctx, string(sqlBytes)); err != nil {
 			return fmt.Errorf("migration failed on %s: %w", file, err)
 		}
-		fmt.Printf("Executed %s\n", filepath.Base(file))
+
+		log.Printf("Executed %s\n", filepath.Base(file))
 	}
 	return nil
 }
 
-// runMigrationsIfRequired runs database migrations when RUN_MIGRATIONS=true
-func RunMigrationsIfRequired(cfg config.Config, db *sql.DB) bool {
-	if cfg.RunMigrations != "true" {
-		return false
-	}
-
-	log.Println("Running database migrations...")
-	if err := runMigrations(db, "migrations/"); err != nil {
-		log.Fatalf("failed to run migrations: %v", err)
-	}
-	log.Println("Migrations completed successfully")
-	return true
+// Helper functions for convenience
+func RunPostgresMigrations(db *sql.DB, migrationsPath string) error {
+	executor := &postgresExecutor{DB: db}
+	return RunMigrations(executor, migrationsPath, "*_postgres.sql")
 }

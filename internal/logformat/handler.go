@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/ShivangSrivastava/sentinel/pkg/utils"
+	"github.com/shv-ng/sentinel/pkg/utils"
 )
 
 type LogFormatHandler interface {

@@ -1,4 +1,4 @@
-module github.com/ShivangSrivastava/sentinel
+module github.com/shv-ng/sentinel
 
 go 1.24.5
 

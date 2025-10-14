@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ShivangSrivastava/sentinel/api"
-	"github.com/ShivangSrivastava/sentinel/internal/database"
-	"github.com/ShivangSrivastava/sentinel/internal/logformat"
 	"github.com/joho/godotenv"
+	"github.com/shv-ng/sentinel/api"
+	"github.com/shv-ng/sentinel/internal/database"
+	"github.com/shv-ng/sentinel/internal/logformat"
 
 	_ "github.com/lib/pq"
 )

@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/ShivangSrivastava/sentinel/internal/logformat"
-	"github.com/ShivangSrivastava/sentinel/pkg/middleware"
+	"github.com/shv-ng/sentinel/internal/logformat"
+	"github.com/shv-ng/sentinel/pkg/middleware"
 )
 
 func NewRouter(logformatHandler logformat.LogFormatHandler) http.Handler {
